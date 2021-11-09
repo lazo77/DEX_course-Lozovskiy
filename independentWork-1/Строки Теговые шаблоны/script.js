@@ -87,7 +87,8 @@ function myFirstTag(strings, studExp, gradeExp) {
   let studName = studExp[0].toUpperCase() + studExp.substr(1, 8);
 
   let studReaction;
-  if (gradeExp == 5) {
+
+/*   if (gradeExp == 5) {
     studReaction = 'доволен "как питон" )))';
   } else if (gradeExp == 4) {
     studReaction = 'feels good';
@@ -95,6 +96,21 @@ function myFirstTag(strings, studExp, gradeExp) {
     studReaction = 'огорчен, но твердо намерен наверстать';
   } else {
     studReaction = 'впал в ступор..';
+  } */
+  
+  switch (gradeExp) {
+    case 5:
+      studReaction = 'доволен "как питон" )))';
+      break;
+    case 4:
+      studReaction = 'feels good';
+      break;
+    case 3:
+      studReaction = 'огорчен, но твердо намерен наверстать';
+      break;
+    default:
+      studReaction = 'впал в ступор..';
+      break;
   }
 
   return `${strings[0]}${studName}${strings[1]}${studReaction}${strings[2]}`;
