@@ -30,7 +30,7 @@ export const curry = (func) => {
       return func.apply(this, args);
     } else {
       return function(...args2) {
-        return f1.apply(this, args.concat(args2));
+        return f1(...args, ...args2);
       }
     }
   }
