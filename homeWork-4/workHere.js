@@ -26,12 +26,13 @@ export const logger = (name, func) => {
 // Должна работать для любого кол-ва аргументов
 export const curry = (func) => {
   return function f1(...args) {
+    let savedThis = this;
     if (args.length >= func.length) {
       return func.apply(this, args);
     } else {
-      return function(...args2) {
-        return f1.apply(this, args.concat(args2));
-      }
+      return function (...args2) {
+        return f1.bind(savedThis,...args, ...args2);
+      };
     }
-  }
+  };
 };
