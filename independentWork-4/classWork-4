@@ -1,0 +1,46 @@
+const requestURl = "https://jsonplaceholder.typicode.com/users";
+
+const user = {
+  name: "Oleg",
+  age: 25
+};
+
+const options = {
+  method: "POST",
+  mode: "cors",
+  cache: "default",
+  credentials: "same-origin",
+  headers: {
+    "Content-Type": "application/json; charset=UTF-8"
+  },
+  redirect: "follow",
+  referrerPolicy: "strict-origin-when-cross-origin",
+  body: JSON.stringify(user)
+};
+
+const delay = (ms) => {
+  return new Promise((resolve) => setTimeout(() => resolve(), ms));
+};
+
+/* fetch(requestURl, options)
+  .then((response) => response.json())
+  .then((result) => console.log(result))
+  .catch(error => console.error(error)) */
+
+async function fetchPost(url, init) {
+  console.log("fetch starting...");
+  await delay(1500);
+  try {
+    const response = await fetch(url, init);
+    const data = await response.json();
+    console.log(data);
+    console.log(data.isAdmin);
+    if (!data.isAdmin) {
+      throw new Error(`No such property "isAdmin" in ${data.name}`);
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+fetchPost(requestURl, options);
