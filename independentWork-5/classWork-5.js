@@ -101,7 +101,6 @@ const pinger = async (n) => {
     console.log("PING");
     setTimeout(() => pinger(n - 1), 1000);
   }
-  return;
 };
 
 pinger(10);
