@@ -1,12 +1,14 @@
 // @ts-ignore:next-line
 const VehicleData = require("./data");
 
-// Опишите типы данных для VehicleData
 interface IVehicle {
   type: "Spacecraft" | "Car" | "Helicopter";
   brand: string;
   model: string;
+  getTitle(): string;
+  getInfo(): string;
 }
+
 interface ISpacecraft extends IVehicle {
   drive: {
     stages: [
@@ -24,6 +26,7 @@ interface ISpacecraft extends IVehicle {
     supportedEnvironments: ["air", "vacuum"];
   };
 }
+
 interface ICar extends IVehicle {
   platform: string;
   drive: {
@@ -33,6 +36,7 @@ interface ICar extends IVehicle {
     supportedEnvironments: ["asphalt", "sand", "rocks"];
   };
 }
+
 interface IHelicopter extends IVehicle {
   drive: {
     totalPower: number;
@@ -45,17 +49,6 @@ type VehicleType = ISpacecraft | ICar | IHelicopter;
 
 export const vehicles: VehicleType[] = VehicleData;
 
-// реализуйте класс "Транспортное средство" и его потомков
-// Ожидаемый вывод getTitle - "VAZ - 2105"
-// Ожидаемый вывод getInfo:
-//   для всех, кроме вертолётов - "Supported environments: {env}" с
-//       перечислением всех доступных окружающих сред
-//   для космических кораблей - "Total thrust: {calc}kN Engine count: {cnt}",
-//       вместо {calc} - общая тага всех ступеней, вместо {cnt} - общее
-//       количество двигателей.
-//   для автомобилей - "Power: {pwr}HP Torque: {Tq}Nm", с выводом соотв. значений
-//   для вертолётов - "Under secret"
-
 class Vehicle implements IVehicle {
   type: "Spacecraft" | "Car" | "Helicopter";
   brand: string;
@@ -66,13 +59,14 @@ class Vehicle implements IVehicle {
     this.model = vehicle.model;
   }
 
-  getTitle(): string {
+  getTitle() {
     return `${this.brand} - ${this.model}`;
   }
-  getInfo(): string {
+  getInfo() {
     return "Under secret";
   }
 }
+
 class Spacecraft extends Vehicle implements ISpacecraft {
   drive: {
     stages: [
@@ -93,7 +87,7 @@ class Spacecraft extends Vehicle implements ISpacecraft {
     super(vehicle);
     this.drive = vehicle.drive;
   }
-  getInfo(): string {
+  getInfo() {
     const stagesThrust = this.drive.stages.map(
       (stage) => stage.engineThrust * stage.engineCount
     );
@@ -103,6 +97,7 @@ class Spacecraft extends Vehicle implements ISpacecraft {
     Engine count: ${enginesCount.reduce((sum, current) => sum + current, 0)}.`;
   }
 }
+
 class Car extends Vehicle implements ICar {
   platform: string;
   drive: {
@@ -116,12 +111,13 @@ class Car extends Vehicle implements ICar {
     this.platform = vehicle.platform;
     this.drive = vehicle.drive;
   }
-  getInfo(): string {
+  getInfo() {
     return `Supported environments: ${this.drive.supportedEnvironments};
     "Power: ${this.drive.power} HP; 
     Torque: ${this.drive.torque} Nm.`;
   }
 }
+
 class Helicopter extends Vehicle implements IHelicopter {
   drive: {
     totalPower: number;
@@ -134,10 +130,10 @@ class Helicopter extends Vehicle implements IHelicopter {
   }
 }
 
-// реализйте функцию конвертации полученнх данных в конечный тип для
-// последующего вывода данных о транспортном средстве
-
-export function vehicleFabric(vehicle: VehicleType): Vehicle | null {
+export function vehicleFabric(vehicle: ISpacecraft): ISpacecraft | null;
+export function vehicleFabric(vehicle: ICar): ICar | null;
+export function vehicleFabric(vehicle: IHelicopter): IHelicopter | null;
+export function vehicleFabric(vehicle: any): unknown | null {
   switch (vehicle.type) {
     case "Spacecraft":
       return new Spacecraft(vehicle);
