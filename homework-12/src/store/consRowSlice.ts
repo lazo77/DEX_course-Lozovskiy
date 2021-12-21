@@ -13,7 +13,8 @@ const consRowSlice = createSlice({
       command: '',
       outputText: ''
     }],
-    commands: []
+    counter: 0,
+    inputCommand: '',
   },
   reducers: {
     addConsRow(state, action: IActionAddRow) {
@@ -65,24 +66,31 @@ const consRowSlice = createSlice({
         return `'${currentCommand}' не является внутренней или внешней командой,
          исполняемой программой или пакетным файлом.
          Поддерживаются комманды:
-          print some message 
+          print somemessage 
           cd someplace 
           cd / 
           cd ../ `;
       }
     },
-    setCommands(state, action) {
-      
+    setInputCommand(state,action) {
+      state.inputCommand = action.payload.inputCommand;
     },
-    getPrevCommand(state, action) {
-
+    setCounter(state, action) {
+      state.counter = state.counter + action.payload.increment;
     },
-    getNextCommand(state, action) {
-
-    }
+    getCommand(state, action) {
+      state.counter = state.counter + action.payload;
+      const commands = state.consRows.map(item => item.command);
+      state.inputCommand = commands[commands.length - state.counter];
+    },
+    // getNextCommand(state, action) {
+    //   state.counter = --state.counter;
+    //   const commands = state.consRows.map(item => item.command);
+    //   state.inputCommand = commands[commands.length - state.counter];
+    // }
   },
 });
 
-export const { addConsRow, getPrevCommand, getNextCommand } = consRowSlice.actions;
+export const { addConsRow, setCounter, setInputCommand } = consRowSlice.actions;
 
 export default consRowSlice.reducer;
